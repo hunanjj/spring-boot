@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace映射接口的全路径 -->  
+<mapper namespace="com.renting.dao.UsersMapper">
+
+	<select id="selectUser" parameterType="Users" resultType="Users">
+		select * from users
+		<where>
+			<if test="uuser !=null and uuser !='' ">
+				uuser = #{uuser}
+			</if>
+			<if test="pwd !=null and pwd !='' ">
+				and pwd = #{pwd}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="insertUsers" parameterType="Users" keyColumn="uid" keyProperty="uid">
+		insert into users values(default,#{uuser},#{pwd},#{phone},#{uname})
+	</insert>
+	
+
+</mapper>

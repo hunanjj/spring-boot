@@ -1,0 +1,224 @@
+﻿<!DOCTYPE HTML>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<HEAD>
+<TITLE>青鸟租房 - 首页</TITLE>
+<META content="text/html; charset=utf-8" http-equiv=Content-Type>
+<LINK rel=stylesheet type=text/css href="css/style.css" th:href="@{/css/style.css}" >
+<META name=GENERATOR content="MSHTML 8.00.7601.17514">
+</HEAD>
+<script src="js/jquery-1.12.4.js" th:src="@{/js/jquery-1.12.4.js}" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+
+	$(function() {
+
+		$("[name=district_id]").change(ch);
+			
+			//面积价格回显
+			$("#floorage>[value=${m.area0}-${m.area}]").attr('selected','selected');
+			$("#price>[value=${m.price0}-${m.price}]").prop('selected',true);
+			//类型区域回显
+			var did=
+			<![CDATA[
+                ${m.did}
+			]]>
+			alert(did);
+			$("option[class='tp'][value=${m.houseTypeId}]").prop('selected',true);
+			$("option[class='ds'][value=${m.did}]").prop('selected',true);
+			//排序方式回显
+			$("option[class='or'][value='${order}']").prop('selected',true);
+			//街道回显
+			ch();
+			
+			//排序方式改变
+			$("#order").change(function(){
+
+				$("form").attr("action","house/list?opr=order");
+				$("form").submit();
+			});
+	
+	});
+	
+/*	function go(pageNo){
+				//alert(pageNo);
+			var dz=	$("form").attr("action","house/list?opr=page&index="+pageNo);
+			//alert(dz);
+			$("form").submit();
+			}*/
+	
+	function ch(){
+	var cnode = $("[name=addressid]"); //街道
+		
+		 $.post('district.json',{did:$('[name=district_id]').val()},function(data){
+				var html = "<option value='0'>--不限--</option>";
+				//alert(data);
+				//var sids=$('.street1').val();
+				for(var i=0;i<data.length;i++){
+					//el表达式要加""${m.addressid}
+					if(data[i].sid==2){
+						html+="<option value='"+data[i].sid+"' selected='selected'>"+data[i].sname+"</option>"
+					}else{
+						html+="<option value='"+data[i].sid+"'>"+data[i].sname+"</option>"
+					}					
+				}				
+				cnode.html(html);
+			},'json');
+		
+	}
+</script>
+<BODY>
+	<DIV id=header class=wrap>
+		<DIV id=logo>
+			<IMG th:src="@{/images/logo.gif}">
+		</DIV>
+		<div style="position:relative; left:530px;top:40px;"><a th:href="@{/guanli/fabu}">发布房屋</a></div>
+	</DIV>
+	<DIV id=navbar class=wrap>
+		<DL class="search clearfix">
+			<FORM id=sform method=post th:action="@{/house/list?opr=query}">
+			
+				<DT>
+					<UL>
+						<LI class=bold>房屋信息</LI><!--th:value="${m.htitle}" -->
+						<LI>标题：<INPUT class=text type=text name=htitle  value="" [[${m.htitle}]] ><LABEL
+							class=ui-blue><INPUT  value=搜索房屋
+								type=submit name=search></LABEL>
+						</LI>
+					</UL>
+				</DT>
+
+				<DD>
+					<UL>
+						<LI class=first>区县</LI>
+						<LI><SELECT id=street name=district_id>
+								<OPTION selected value="0">-不限-</OPTION>
+								<!--<c:forEach items="${dislist}" var="dis">-->
+									<OPTION class='ds' th:each="dis:${dislist}"
+											th:value="${dis.did}" th:text="${dis.dname}"></OPTION>
+								<!--</c:forEach>-->
+						</SELECT></LI>
+					</UL>
+				</DD>
+				<DD>
+					<UL>
+						<LI class=first>街道</LI>
+						<LI><SELECT id=street name=addressid>
+								<OPTION selected value="0">-不限-</OPTION>
+
+						</SELECT></LI>
+					</UL>
+				</DD>
+				<DD>
+					<UL>
+						<LI class=first>房型</LI>
+						<LI><SELECT name=houseTypeId > 
+								<OPTION selected value=0>-不限-</OPTION>
+								<!--<c:forEach items="" var="ht">-->
+									<OPTION class='tp' th:each="ht:${htlist}"
+											th:value="${ht.htid}" th:text="${ht.htname}"></OPTION>
+								<!--</c:forEach>-->
+						</SELECT></LI>
+					</UL>
+				</DD>
+				<DD>
+					<UL>
+						<LI class=first>价格</LI>
+						<LI><SELECT name=price id=price>
+								<option value="0" selected=selected>-不限-</option>
+								<option value="0-600">0-600</option>
+								<option value="600-1200">600-1200</option>
+								<option value="1200-2000">1200-2000</option>
+								<option value="2000-8000">2000-8000</option>
+
+						</SELECT></LI>
+					</UL>
+				</DD>
+				<DD>
+					<UL>
+						<LI class=first>面积</LI>
+						<LI><SELECT name=area id=floorage>
+								<option selected value="0">-不限-</option>
+								<option value="0-60">0-60</option>
+								<option value="60-120">60-120</option>
+								<option value="120-200">120-200</option>
+
+						</SELECT></LI>
+					</UL>
+				</DD>
+				<DD>
+					<UL>
+						<LI class=first>排序方式&nbsp;&nbsp;
+						<SELECT name=order id=order>
+								<option  class='or' value='creatDate desc'>时间降序</option>
+								<option class='or' value='price desc'>价格从高到低</option>
+								<option class='or' value='price'>价格从低到高</option>
+								<option class='or' value='area desc'>面积从高到低</option>
+
+						</SELECT></LI>
+					</UL>
+				</DD>
+			</FORM>
+		</DL>
+	</DIV>
+	<DIV class="main wrap">
+		<TABLE class=house-list>
+			<TBODY>
+				<!--<c:forEach items="${hlist.getResult()}" var="ho">-->
+					<TR th:each="ho:${hlist.getResult()}">
+						<TD class=house-thumb><span><A th:href="@{/house/selectOne/}+${ho.hid}"
+								target="_blank"><img th:src="@{/images/thumb_house.gif}"
+									width="100" height="75" alt=""></a></span></TD>
+						<TD>
+							<DL>
+								<DT>
+									<A th:href="@{/house/selectOne/}+${ho.hid}" target="_blank" th:text="${ho.htitle}"></A>
+								</DT>
+								<DD th:text="${ho.dname}+${ho.sname}">
+									&nbsp;&nbsp; <b style="color:red;" th:text="${ho.area}"></b>平米<BR>联系方式：${ho.tel}
+								</DD>
+							</DL>
+						</TD>
+						<TD class=house-type th:text="${ho.htname}"></TD>
+						<TD class=house-price><SPAN th:text="${ho.price}"></SPAN>元/月</TD>
+					</TR>
+				<!--</c:forEach>-->
+			
+				
+			</TBODY>
+		</TABLE>
+		<DIV class=pager>
+		<UL>
+			<!--<c:forEach items="" var="num">-->
+			<li th:each="num:${hinfo.getNavigatepageNums()}">
+			<!--<A th:href="javascript:go(${num});">${num}</A>-->
+			<A th:href="@{/house/list?opr=page&index=}+${num}" th:text="${num}"></A>
+
+			</li>
+			<!--</c:forEach>-->
+				<LI class=current>
+						<A th:href="@{/house/list?opr=page&index=1}">首页</A>
+					</LI>
+					<LI>
+						<A th:href="@{/house/list?opr=page&index=}+${hinfo.getPageNum()-1}">上一页</A>
+					</LI>
+					<LI>
+						<A th:href="@{/house/list?opr=page&index=}+${hinfo.getPageNum()+1}">下一页</A>
+					</LI>
+					<LI>
+						<A th:href="@{/house/list?opr=page&index=}+${hinfo.getPages()}">末页</A>
+					</LI>
+
+			</UL>
+			<SPAN class=total th:text="${hinfo.getPageNum()}+'/'"></SPAN>
+			<SPAN class=total th:text="${hinfo.getPages()}+'页'"></SPAN>
+			
+		</DIV>
+	</DIV>
+	<DIV id=footer class=wrap>
+		<DL>
+			<DT>青鸟租房 © 2010 北大青鸟 京ICP证1000001号</DT>
+			<DD>关于我们 · 联系方式 · 意见反馈 · 帮助中心</DD>
+		</DL>
+	</DIV>
+</BODY>
+</HTML>

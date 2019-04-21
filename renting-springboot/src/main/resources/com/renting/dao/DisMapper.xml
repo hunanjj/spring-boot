@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace映射接口的全路径 -->  
+<mapper namespace="com.renting.dao.DisMapper">
+
+	<cache/>
+
+	<select id="selectDis" resultType="District">
+		select * from district
+		
+	</select>
+	
+	<resultMap type="District" id="DiStMap">
+	 	<id column="did" property="did"/>
+	 	<collection property="streets" ofType="Street" />
+	 	
+	 <!-- 	</collection>
+	 	<association property="street" javaType="Street">
+	 		<id column="sid" property="sid"/>
+	 	</association> -->
+	</resultMap>
+	
+	<select id="selectDistStreet" parameterType="Map" resultMap="DiStMap">
+		select * from district d,street s
+			where d.did=s.sdid 
+			<if test="sid !=null and sid !='' ">
+				and sid=#{sid}
+			</if>
+			<if test="sdid !=null and sdid !='' ">
+				and sdid=#{sdid}
+			</if>
+		
+	</select>
+	
+	<select id="selectStreetByDid" resultType="Street">
+		SELECT * FROM street WHERE sdid = #{sdid}
+	</select>
+	
+	
+	
+</mapper>

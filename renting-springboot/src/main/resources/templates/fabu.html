@@ -1,0 +1,218 @@
+﻿
+<!DOCTYPE HTML>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<HEAD>
+	
+<TITLE>青鸟租房 -发布房屋信息</TITLE>
+<META content="text/html; charset=utf-8" http-equiv=Content-Type>
+<LINK rel=stylesheet type=text/css href="css/style.css">
+<META name=GENERATOR content="MSHTML 8.00.7601.17514">
+</HEAD>
+<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="calendar/WdatePicker.js" charset="utf-8"></script>
+	<script type="text/javascript">
+	  
+		$(function(){
+		//alert(0);
+		
+		$("[name=district_id]").change(ch);
+		
+	 		var price1=$('.price1').val();
+	 		
+			//类型区域回显
+			$("option[class='tp'][value='"+$('.type1').val() +"']").prop('selected',true);
+			$("option[class='ds'][value='"+$('.district1').val() +"']").prop('selected',true);
+			//街道回显
+			ch();
+		
+		});
+		/* <!-- 用来转义，防止输入alert("攻击网站") --> */
+	function htmlEncodeJQ ( str ) {
+    	return $('<span/>').text( str ).html();
+	}
+     //用来转义，防止输入攻击网站
+	function htmlDecodeJQ ( str ) {
+    	return $('<span/>').html( str ).text();
+	}
+	
+	function ch(){
+	var cnode = $("[name=addressid]"); //街道
+		
+		 $.post("${pageContext.request.contextPath }/district.json",{did:$('[name=district_id]').val()},function(data){
+				var html = "<option value='0'>--不限--</option>";
+				//alert(data);
+				var sids=$('.street1').val();
+				
+				 for(var i=0;i<data.length;i++){
+					//el表达式要加""
+					if(data[i].sid==sids){
+						html+="<option value='"+data[i].sid+"' selected='selected'>"+data[i].sname+"</option>"
+					}else{
+						html+="<option value='"+data[i].sid+"'>"+data[i].sname+"</option>"
+					}					
+				}		
+				
+				cnode.html(html);
+			},'json');
+		 
+	}
+		
+		function sub(opr){
+			//alert(opr);
+				var sign=true;
+					
+				if($('#add_title').val().trim()=='' ){
+					alert('标题不能为空！');
+					return false;
+				}else{
+					//用来转义，防止输入<script>攻击网站
+					$('#add_title').val(htmlEncodeJQ ($('#add_title').val()));
+				}
+				
+				if($('[name=hcontent]').val().trim()=='' ){					
+				}else{
+				    //用来转义，防止输入<script>攻击网站
+					$('[name=hcontent]').val(htmlEncodeJQ ($('[name=hcontent]').val()));
+				}
+				
+				if($('#add_floorage').val().trim()==''){
+					alert('面积不能为空！');
+					return false;
+				}
+				if($('#add_price').val().trim()==''){
+					alert('价格不能为空！');
+					return false;
+				}
+				if(isNaN($('#add_price').val()) || isNaN($('#add_floorage').val())){
+					alert('价格或面积一定要是数字！');
+					return false;
+				}
+				if($('#add_price').val()<=0 || $('#add_floorage').val()<=0){
+					alert('价格或面积一定要大于0！');
+					return false;
+				}
+				if($('[name=houseTypeId]').val()==0 || $('[name=addressid]').val()==0){
+					alert('请选择好类型和街道！');
+					return false;
+				}
+				var reg = /^\d{4}-\d{2}-\d{2}$/;
+				if(!reg.test($('#add_date').val())){
+					alert('日期格式必须是yyyy-MM-dd！');
+					return false;
+				}
+
+				var regMobile=/^1\d{10}$/;
+				if(!regMobile.test($('#add_contact').val())){
+					alert('请输入正确的11位手机号码！');
+					return false;
+				}
+				  var uri=$("form").attr('action');
+				$("form").attr('action',uri+opr); 
+				$("form").submit()  ; 
+				
+			
+		}
+		
+	</script>
+<BODY>
+	<DIV id=header class=wrap>
+		<DIV id=logo>
+			<IMG src="images/logo.gif">
+		</DIV>
+	</DIV>
+	<DIV id=regLogin class=wrap>
+		<DIV class=dialog>
+			<DL class=clearfix>
+				<DT>新房屋信息发布</DT>
+				<DD class=past>填写房屋信息</DD>
+			</DL>
+			<DIV class=box>
+				<FORM action="${pageContext.request.contextPath }/house/" method="post">
+				<!-- <FORM id=add_action method=post name=add
+					action=/RentingMVC/FabuSubmitServlet> -->
+			<input type="hidden" class="district1" value="${holist.did}"/>
+			<input type="hidden" class="type1" value="${holist.houseTypeId}"/>
+			<input type="hidden" class="street1" value="${holist.addressid}"/>
+			<input type="hidden" name="houseId" value="${holist.hid}"/>
+			
+					<DIV class=infos>
+						<TABLE class=field>
+							<TBODY>
+								<TR>
+									<TD class=field>标 题：</TD>
+									<TD><INPUT id=add_title class=text type=text 
+									name=htitle value=${holist.htitle}></TD>
+								</TR>
+								<TR>
+									<TD class=field>户 型：</TD>
+									<TD><SELECT class=text name=houseTypeId>
+											<OPTION selected value=0>--请选择--</OPTION>
+											<c:forEach items="${htlist}" var="ht">
+												<OPTION class='tp' value=${ht.htid}>${ht.htname}</OPTION>
+											</c:forEach>
+
+
+									</SELECT></TD>
+								</TR>
+								<TR>
+									<TD class=field>面 积：</TD>
+									<TD><INPUT id=add_floorage class=text type=text
+										name=area value="${holist.area}"></TD>
+								</TR>
+								<TR>
+									<TD class=field>价 格：</TD>
+									<TD><INPUT id=add_price class=text type=text
+										name=price value="${holist.price}"></TD>
+								</TR>
+								 <TR>
+								    <TD class=field>房产证日期：</TD>
+								    <TD><INPUT id=add_date class="text Wdate" type=text 
+								    	 name=houseDate value="${holist.houseDate}"
+								    	 readonly="readonly" onclick="WdatePicker();"></TD></TR>
+								<TR>
+									<TD class=field>位 置：</TD>
+									<TD>区：<SELECT class=text name=district_id>
+												<OPTION selected value=0>--请选择--</OPTION>
+												<c:forEach items="${dislist}" var="dis">
+												 <OPTION class='ds' value="${dis.did}">${dis.dname}</OPTION>
+												</c:forEach>
+											</SELECT> 
+										街：<SELECT class=text name=addressid>
+												<OPTION selected value=0>--请选择--</OPTION>
+											</SELECT>
+									</TD>
+								</TR>
+								
+								<TR>
+									<TD class=field>联系方式：</TD>
+									<TD><INPUT id=add_contact class=text type=text
+										name=tel value="${holist.tel}"></TD>
+								</TR>
+								<TR>
+									<TD class=field>详细信息：</TD>
+									<TD><TEXTAREA name=hcontent>${holist.hcontent}</TEXTAREA></TD>
+								</TR>
+							</TBODY>
+						</TABLE>
+						<DIV class=buttons>
+						<c:if test="${ empty holist.hid}">
+							<INPUT onclick="sub('add')" value=立即发布 type=button />
+						</c:if>
+						<c:if test="${not empty holist.hid}">
+							<INPUT onclick="sub('update')" value=更新 type=button />
+						</c:if>
+						</DIV>
+					</DIV>
+				</FORM>
+			</DIV>
+		</DIV>
+	</DIV>
+	<DIV id=footer class=wrap>
+		<DL>
+			<DT>青鸟租房 © 2010 北大青鸟 京ICP证1000001号</DT>
+			<DD>关于我们 · 联系方式 · 意见反馈 · 帮助中心</DD>
+		</DL>
+	</DIV>
+</BODY>
+</HTML>

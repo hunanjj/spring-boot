@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace映射接口的全路径 -->  
+<mapper namespace="com.renting.dao.HouseMapper">
+
+	
+	
+	<insert id="insertHouse" parameterType="House" keyColumn="hid" keyProperty="hid">
+		insert into house 
+		values(default,#{htitle},#{addressid},#{houseTypeId},#{area},#{price},#{houseDate},#{tel},#{hcontent},NOW(),#{ownerid})
+	</insert>
+	
+	<sql id="whereselect">
+		<where>
+			<if test="hid !=null and hid !='' ">
+				 and hid = #{hid}
+			</if>
+			<if test="htitle !=null and htitle !='' ">
+				 and htitle like concat('%',#{htitle},'%') 
+			</if>
+			<if test="addressid !=null and addressid !='' ">
+				 and addressid = #{addressid}
+			</if>
+			<if test="houseTypeId !=null and houseTypeId !='' ">
+				 and houseTypeId = #{houseTypeId}
+			</if>
+			<if test="area !=null and area !='' ">
+				 and area between #{area0} and #{area}
+			</if>
+			<if test="price !=null and price !='' ">
+				 and price BETWEEN #{price0} AND  #{price}
+			</if>
+			<if test="ownerid !=null and ownerid !='' ">
+				 and ownerid = #{ownerid}
+			</if>
+			<if test="did !=null and did !='' ">
+				 and did = #{did}
+			</if>
+			<if test="houseDate !=null and houseDate !='' ">
+				 and houseDate = #{houseDate}
+			</if>
+		
+		</where>
+	</sql>
+	
+	<select id="selectHouse" resultType="map">
+		select *
+		 from house h left join street s on h.addressid=s.sid
+			left join district d on s.sdid=d.did 
+			left join housetype ht on h.houseTypeId=ht.htid
+			left join users u ON h.ownerid=u.uid
+			<include refid="whereselect"></include>
+		<!-- ORDER BY creatDate DESC  -->
+		<!-- <if test="pageNo !=null and pagesize !=null">
+			LIMIT #{pageNo},#{pagesize} ;
+		</if> -->
+	</select>
+	
+	
+	<delete id="deleteHouseOne">
+		delete from house where hid=#{hid}
+	</delete>
+	
+	<update id="updateHouse" parameterType="House">
+		update house
+			<set>
+				<if test="htitle !=null and htitle !='' ">
+				 	htitle = #{htitle} ,
+				</if>
+				<if test="addressid !=null and addressid !='' ">
+				 	addressid = #{addressid} ,
+				</if>
+				<if test="houseTypeId !=null and houseTypeId !='' ">
+				 	houseTypeId = #{houseTypeId} ,
+				</if>
+				<if test="area !=null and area !='' ">
+				 	area = #{area} ,
+				</if>
+				<if test="price !=null and price !='' ">
+				 	price = #{price} ,
+				</if>
+				<if test="houseDate !=null ">
+				    houseDate = #{houseDate} ,
+				</if>
+				<if test="tel !=null and tel !='' ">
+				 	tel = #{tel} ,
+				</if>
+				<if test="hcontent !=null and hcontent !='' ">
+				 	hcontent = #{hcontent} ,
+				</if>
+				<if test="creatDate ==null ">
+				 	creatDate=NOW()
+				</if>
+				
+			</set>
+			
+			
+			where hid = #{hid}
+	</update>
+
+</mapper>

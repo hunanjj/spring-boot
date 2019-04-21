@@ -1,0 +1,26 @@
+server:
+  port: 8090
+  servlet:
+    context-path: /renting
+
+#\u89C6\u56FE\u89E3\u6790\u5668
+spring:
+#  mvc:
+#    view:
+#      prefix: /jsp/
+#      suffix: .html
+
+#\u6570\u636E\u6E90
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql:///renting?serverTimezone=GMT
+    username: root
+    password: 1234
+
+#mybatis\u914D\u7F6E
+mybatis:
+  type-aliases-package: com.renting.pojo
+  configuration:
+    auto-mapping-behavior: full
+    use-generated-keys: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

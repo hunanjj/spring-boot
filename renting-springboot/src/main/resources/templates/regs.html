@@ -1,0 +1,120 @@
+﻿<!DOCTYPE HTML>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<HEAD><TITLE>青鸟租房 - 用户注册</TITLE>
+<META content="text/html; charset=utf-8" http-equiv=Content-Type>
+<LINK rel=stylesheet type=text/css href="css/style.css">
+
+<META name=GENERATOR content="MSHTML 8.00.7601.17514"></HEAD>
+	<script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+		//alert(0);
+	$(function(){
+	var flag=true;
+	
+	$("[name=uuser]").blur(function(){
+		var user=$(this).val();
+		
+		if(user == null || user ==''){
+			alert("用户名不可以空的。。。");
+		}else{			
+		$.post('${pageContext.request.contextPath }/userCode.json',{'user':user},function(data){
+			if(data>0){
+				alert("该用户名已被使用,请换再一个");
+				flag=false;
+			}else{
+				alert("用户名可以使用");
+				flag=true;
+			}
+		});
+		
+		}
+	});
+	
+	
+	$("[name=repassword]").blur(function(){
+	var pwd=$("[name=pwd]").val();
+	var pwd1=$(this).val();
+	/* alert(pwd);
+	alert(pwd1); */
+	if(pwd==null || pwd == ''){
+		alert("密码不能为空");
+		flag=false;
+	}
+	if(pwd1==null || pwd1 == ''){
+		alert("确认密码不能为空");
+		flag=false;
+	}else{
+		if(pwd != pwd1){
+			alert("两次输入的密码不一样");
+			flag=false;
+		}else{
+			flag=true;
+		}
+	}
+	});
+	
+	$("[type=button]").click(function(){
+		
+		var user=$("[name=uuser]").val();
+		var phone=$("[name=phone]").val();
+		var uname=$("[name=uname]").val();
+		var pwd1=$("[name=repassword]").val();
+		if(user == null || user ==''){
+			alert("用户名不能为空");
+		}else if(pwd1 == null || pwd1 ==''){
+			alert("密码不能为空")
+		}else if(phone == null || phone ==''){
+			alert("电话不能为空")
+		}else if(uname == null || uname ==''){
+			alert("姓名不能为空")
+		}		
+		else{
+		if(flag){
+			$("form").submit()  ; 
+			/* location="/Renting/regsSevlet";  */
+			}
+		}
+		
+	});
+	
+	})
+</script>
+<BODY>
+<DIV id=header class=wrap>
+<DIV id=logo><IMG src="images/logo.gif"></DIV></DIV>
+<DIV id=regLogin class=wrap>
+<DIV class=dialog>
+<DL class=clearfix>
+  <DT>新用户注册</DT>
+  <DD class=past>填写个人信息</DD></DL>
+<DIV class=box>
+<FORM action="${pageContext.request.contextPath }/user/regSubmit" method="post">
+<DIV class=infos>
+<TABLE class=field>
+  <TBODY>
+  <TR>
+    <TD class=field>用 户 名：</TD>
+    <TD><INPUT class=text type=text name=uuser /> </TD></TR>
+  <TR>
+    <TD class=field>密　　码：</TD>
+    <TD><INPUT class=text type=password name=pwd></TD></TR>
+  <TR>
+    <TD class=field>确认密码：</TD>
+    <TD><INPUT class=text type=password name=repassword> </TD></TR>
+  <TR>
+    <TD class=field>电　　话：</TD>
+    <TD><INPUT class=text type=text name=phone> </TD></TR>
+  <TR>
+    <TD class=field>用户姓名：</TD>
+    <TD><INPUT class=text type=text name=uname> </TD></TR></TBODY></TABLE>
+<DIV class=buttons>
+
+<INPUT  value=立即注册 type=button>
+<!-- onclick='document.location="regs.htm"' -->
+<p style="color:red;">${error}</p>
+</DIV></DIV></FORM></DIV></DIV></DIV>
+<DIV id=footer class=wrap>
+<DL>
+  <DT>青鸟租房 © 2010 北大青鸟 京ICP证1000001号</DT>
+  <DD>关于我们 · 联系方式 · 意见反馈 · 帮助中心</DD></DL></DIV></BODY></HTML>
